@@ -3,6 +3,15 @@
            https://api.github.com/users/<your name>
 */
 
+axios.get('https://api.github.com/users/ali-dervisoglu')
+  .then(response => {
+    console.log(createCard(response.data));
+  })
+  .catch(error => {
+    console.error(error);
+  })
+
+
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
@@ -24,6 +33,9 @@
           user, and adding that card to the DOM.
 */
 
+axios.get ('https://api.github.com/users/ali-dervisoglu/followers')
+  .then (response => console.log('followers', response))
+  .catch(error => console.error(error))
 const followersArray = [];
 
 /* Step 3: Create a function that accepts a single object as its only argument,
@@ -46,7 +58,57 @@ const followersArray = [];
 
 */
 
-/* List of LS Instructors Github username's: 
+function createCard(user) {
+  const card = document.createElement('div');
+  card.classList.add("card");
+
+  const img = document.createElement('img');
+  img.src = user['avatar_url'];
+
+  const cardInfo = document.createElement('div');
+  cardInfo.classList.add('card-info');
+
+  const h3 = document.createElement('h3');
+  h3.classList.add('name');
+  h3.textContent = user.name || user.login;
+
+  const pTags = [];
+  for (let i = 0; i < 6; i++) {
+    pTags.push(document.createElement('p'));
+  }
+
+pTags[0].classList.add('username');
+pTags[0].textContent = user.login;
+
+pTags[1].textContent = `Location: ${user.location || "Not Available"}`;
+
+pTags[2].textContent = 'Profile: ';
+const a = document.createElement('a');
+const aURL = user['html_url'];
+a.href = aURL;
+a.textContent = aURL;
+pTags[2].appendChild(a);
+
+pTags[3].textContent = `Followers: ${user.followers}`;
+
+pTags[4].textContent = `Following: ${user.following}`;
+
+pTags[5].textContent = `Bio: ${user.bio || "Not Available"}`;
+
+cardInfo.appendChild(h3);
+pTags.forEach(p => cardInfo.appendChild(p))
+
+card.appendChild(img);
+card.appendChild(cardInfo);
+
+const cardsSection = document.querySelector('.cards');
+cardsSection.appendChild(card);
+
+return card;
+}
+
+
+/* List of LS Instructors Github username's:
   tetondan
   dustinmyers
   justsml
